@@ -2,7 +2,7 @@ from django.test import Client, TestCase
 from django.urls import reverse
 import json
 
-from restaurant.serializers import MenuSerializer, BookingSerializer
+from api.serializers import MenuSerializer, BookingSerializer
 from restaurant.models import Menu, Booking
 from config.tests.mixins import (
     UserMixin,
@@ -32,14 +32,14 @@ class BookingViewTest(SetUpMixin, UserMixin, BookingMixin, TestCase):
         return super().setUp()
 
     def test_list(self):
-        response = self.client.get(reverse('restaurant:bookings'))
+        response = self.client.get(reverse('api:bookings'))
         serializer = BookingSerializer(Booking.objects.all(), many=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, serializer.data)
 
     def test_create(self):
         data = {'name': 'pete', 'no_of_guests': 4, 'booking_date': '2023-03-04'}
-        response = self.client.post(reverse('restaurant:bookings'), data=data)
+        response = self.client.post(reverse('api:bookings'), data=data)
         serializer = BookingSerializer(Booking.objects.get(name='pete'))
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data, serializer.data)
@@ -52,7 +52,7 @@ class SingleBookingViewTest(SetUpMixin, UserMixin, SingleBookingMixin, TestCase)
         return super().setUp()
 
     def test_retrieve(self):
-        response = self.client.get(reverse('restaurant:booking-detail', kwargs={'pk': self.booking.pk}))
+        response = self.client.get(reverse('api:booking-detail', kwargs={'pk': self.booking.pk}))
         serializer = BookingSerializer(Booking.objects.get(pk=self.booking.pk))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, serializer.data)
@@ -60,7 +60,7 @@ class SingleBookingViewTest(SetUpMixin, UserMixin, SingleBookingMixin, TestCase)
     def test_partial_update(self):
         data = json.dumps({'no_of_guests': 6, 'booking_date': '2023-03-06'})
         response = self.client.patch(
-            reverse('restaurant:booking-detail', kwargs={'pk': self.booking.pk}),
+            reverse('api:booking-detail', kwargs={'pk': self.booking.pk}),
             data = data,
             content_type = 'application/json',
         )
@@ -71,7 +71,7 @@ class SingleBookingViewTest(SetUpMixin, UserMixin, SingleBookingMixin, TestCase)
     def test_update(self):
         data = json.dumps({'name': 'will', 'no_of_guests': 6, 'booking_date': '2023-03-06'})
         response = self.client.put(
-            reverse('restaurant:booking-detail', kwargs={'pk': self.booking.pk}),
+            reverse('api:booking-detail', kwargs={'pk': self.booking.pk}),
             data = data,
             content_type = 'application/json',
         )
@@ -80,7 +80,7 @@ class SingleBookingViewTest(SetUpMixin, UserMixin, SingleBookingMixin, TestCase)
         self.assertEqual(response.data, serializer.data)
 
     def test_delete(self):
-        response = self.client.delete(reverse('restaurant:booking-detail', kwargs={'pk': self.booking.pk}))
+        response = self.client.delete(reverse('api:booking-detail', kwargs={'pk': self.booking.pk}))
         self.assertEqual(response.status_code, 204)
         self.assertEqual(response.data, None)
         self.assertEqual(Booking.objects.filter(pk=self.booking.pk).exists(), False)
@@ -93,14 +93,14 @@ class MenuItemViewTest(SetUpMixin, UserMixin, MenuItemMixin, TestCase):
         super().setUp()
 
     def test_list(self):
-        response = self.client.get(reverse('restaurant:menu'))
+        response = self.client.get(reverse('api:menu'))
         serializer = MenuSerializer(Menu.objects.all(), many=True)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, serializer.data)
 
     def test_create(self):
         data = {'title': 'latte', 'price': 2.99, 'inventory': 5}
-        response = self.client.post(reverse('restaurant:menu'), data=data)
+        response = self.client.post(reverse('api:menu'), data=data)
         serializer = MenuSerializer(Menu.objects.get(title='latte'))
         self.assertEqual(response.status_code, 201)
         self.assertEqual(response.data, serializer.data)
@@ -113,7 +113,7 @@ class SingleMenuItemViewTest(SetUpMixin, UserMixin, SingleMenuItemMixin, TestCas
         return super().setUp()
 
     def test_retrieve(self):
-        response = self.client.get(reverse('restaurant:menu-detail', kwargs={'pk': self.menu_item.pk}))
+        response = self.client.get(reverse('api:menu-detail', kwargs={'pk': self.menu_item.pk}))
         serializer = MenuSerializer(Menu.objects.get(pk=self.menu_item.pk))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data, serializer.data)
@@ -121,7 +121,7 @@ class SingleMenuItemViewTest(SetUpMixin, UserMixin, SingleMenuItemMixin, TestCas
     def test_partial_update(self):
         data = json.dumps({'price': 3.99, 'inventory': 3})
         response = self.client.patch(
-            reverse('restaurant:menu-detail', kwargs={'pk': self.menu_item.pk}),
+            reverse('api:menu-detail', kwargs={'pk': self.menu_item.pk}),
             data = data,
             content_type = 'application/json',
         )
@@ -132,7 +132,7 @@ class SingleMenuItemViewTest(SetUpMixin, UserMixin, SingleMenuItemMixin, TestCas
     def test_update(self):
         data = json.dumps({'title': 'Apple Juice', 'price': 3.85, 'inventory': 7})
         response = self.client.put(
-            reverse('restaurant:menu-detail', kwargs={'pk': self.menu_item.pk}),
+            reverse('api:menu-detail', kwargs={'pk': self.menu_item.pk}),
             data = data,
             content_type = 'application/json',
         )
@@ -141,7 +141,7 @@ class SingleMenuItemViewTest(SetUpMixin, UserMixin, SingleMenuItemMixin, TestCas
         self.assertEqual(response.data, serializer.data)
 
     def test_delete(self):
-        response = self.client.delete(reverse('restaurant:menu-detail', kwargs={'pk': self.menu_item.pk}))
+        response = self.client.delete(reverse('api:menu-detail', kwargs={'pk': self.menu_item.pk}))
         self.assertEqual(response.status_code, 204)
         self.assertEqual(response.data, None)
         self.assertEqual(Menu.objects.filter(pk=self.menu_item.pk).exists(), False)

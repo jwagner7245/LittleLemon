@@ -4,7 +4,7 @@ from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIV
 from rest_framework.permissions import IsAuthenticated
 
 from restaurant.models import Menu, Booking
-from restaurant.serializers import BookingSerializer, MenuSerializer
+from .serializers import BookingSerializer, MenuSerializer
 
 
 class MenuItemView(ListCreateAPIView):

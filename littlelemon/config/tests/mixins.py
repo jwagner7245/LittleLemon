@@ -30,7 +30,7 @@ class UserMixin:
         return Client().post(url, data=data)
 
     def get_token(self, username, password):
-        url = 'http://127.0.0.1:8000/restaurant/token/login/'
+        url = 'http://127.0.0.1:8000/api/token/login/'
         data = {
             'username': username,
             'password': password,
